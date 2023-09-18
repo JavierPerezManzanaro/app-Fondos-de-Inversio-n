@@ -17,7 +17,9 @@ Muestra un resumen de la cesta de fondos de inversión activos para poder tomar 
 También muestra el indice [Fear&Greed](https://edition.cnn.com/markets/fear-and-greed).
 
 
-## Caraterísticas:
+![Imagen de ejemplo](https://raw.githubusercontent.com/JavierPerezManzanaro/app_Fondos_de_Inversion/main/Captura%20de%20la%20aplicación.png)
+
+## Caraterísticas
 
 ### Obtención de datos del usuario
 La aplicación lee dos archivos CVS que el usuario debe generar:
@@ -41,13 +43,7 @@ Las columnas usadas son estas:
 - Participaciones de la operación: Fila 2.
 
 Ambos archivos deben estar en una carpeta que se llama "Datos".
-Los datos están así formados porque estos datos los genero al exportar automáticamente un documento en Numbres (aplicación tipo Excel en para Mac).
-
-### Datos de ejemplo
-En esta carpeta estan los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
-Los tres doscumentos son un ejemplo para que partiendo de estos documentos se generen los nuevos.
-La imagen "Captura de la aplicación.png" muestra la aplicación con estos datos.
-
+Los datos están así creados porque se generan automáticamente al exportar un documento en Numbres (aplicación tipo Excel para Mac).
 
 ### Web scraping
 Esta app obtiene mediante web scraping los siguientes datos de cada fondo de inversión:
@@ -72,18 +68,16 @@ Para aumentar la velocidad he implementado tecnología de concurrencia. El resul
 - Y seis hilos tardan 5.9 seg
 
 ### Moneda
-Todos los datos mostrados están en Euros. La conversión se realiza usando el módulo [CurrencyConverter](https://pypi.org/project/CurrencyConverter/)
+Todos los datos mostrados están en Euros. La conversión se realiza usando el módulo [CurrencyConverter](https://pypi.org/project/CurrencyConverter/).
 
 ### Informes
 El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT para su posterior consulta. Estos archivos son almacenados en una carpeta que se llama "Datos".
-
 
 
 # Instrucciones de instalación
 - Clonar el repositorio en local
 - Tener instalado Python 3.11.
 - Ejecutar: 'App Gestión de Fondos de inversión.py'
-
 
 
 # Manifiesto de los archivos del repositorio
@@ -97,6 +91,10 @@ El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT p
   Archivo que almacena el valor y la fecha de la posición mas alta y mas baja desde que se creo este archivo JSON
 - Informes
   Carpeta que almacena los informes diarios
+- Datos de ejemplo
+  En esta carpeta estan los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
+  Los tres documentos son un ejemplo y se pueden usar para generar los nuevos.
+  La imagen "Captura de la aplicación.png" muestra la aplicación con estos datos.
 
 
 # Historial de versiones
