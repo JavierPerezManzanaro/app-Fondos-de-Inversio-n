@@ -1,0 +1,4 @@
+Nombre;Dueño;;;isbn;URL de FT;Moneda;Gestor;Periodicidad;Pais en Investpy;Nombre Investpy;yahoo, índice
+Bankinter Indice Japón, FI;comun;;;ES0114104039;https://markets.ft.com/data/funds/tearsheet/risk?s=ES0114104039:EUR;EUR;Bankinter;;spain;Bankinter índice Japón R Fi;0P00000PJ4.F
+Bankinter Tecnología R FI;comun;;;ES0114797030;https://markets.ft.com/data/funds/tearsheet/risk?s=ES0114797030:EUR;EUR;Bankinter;;spain;Bankintertecnología R Fi;0P00000PGC.F
+T Rowe Price Global T Ah;segundo titular;;;LU1602119973;https://markets.ft.com/data/funds/tearsheet/risk?s=LU1602119973:EUR;EUR;Bankinter;;;;
