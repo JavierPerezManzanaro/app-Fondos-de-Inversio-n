@@ -17,7 +17,7 @@ Muestra un resumen de la cesta de fondos de inversión activos para poder tomar 
 También muestra el indice [Fear&Greed](https://edition.cnn.com/markets/fear-and-greed).
 
 
-![Imagen de ejemplo](https://raw.githubusercontent.com/JavierPerezManzanaro/app_Fondos_de_Inversion/main/Captura%20de%20la%20aplicación.png)
+![Imagen de ejemplo](https://github.com/JavierPerezManzanaro/app_Fondos_de_Inversion/blob/08068762f5b60aa2ac221b6ff68fd6123d672bd4/Datos%20de%20ejemplo/Captura.png)
 
 ## Caraterísticas
 
