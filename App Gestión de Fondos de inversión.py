@@ -39,8 +39,6 @@ logging.basicConfig(level=logging.WARNING,
 # logging.error('Error')
 
 
-# * Funciones
-
 def lectura_datos_fondos() -> list:
     """Lee los datos del archivo de CVS exportado por Numbers
 
@@ -328,25 +326,29 @@ def mostrar_tabla(tipo_de_tabla: str, tabla_completa: list):
     """
     tabla_general = []
     for fila in tabla_completa:
-        #todo hacer un case para los dintintos tipos de tablas
         if tipo_de_tabla == 'rentabilidad':
             tabla_general.append([  fila['nombre'],
                                     fila['isbn_4cifras'], fila['moneda'],
                                     fila['cambio_diario'], fila['valor'], fila['fecha'],
-                                    fila['saldo_actual_EUR'], fila['rentabilidad_euros'], fila['rentabilidad_porc'],
+                                    fila['saldo_actual_EUR'], fila['rentabilidad_euros'], 
+                                    fila['rentabilidad_porc'],
+                                    fila['tae'],
                                     fila['alpha'], fila['beta'], fila['anual'],
                                     fila['total_saldo_por'],
                                     fila['minimo'], fila['maximo'], ])
     return tabulate(tabla_general, headers="firstrow", tablefmt="rst",
-            floatfmt=("", "", "", "", '_.2f', '', '_.2f', '_.2f', '_.1f', '', '', '', '.1f'),)
-        # elif tipo_de_tabla == 'control':
-        #     tabla_general.append([  fila['nombre'],
-        #                             fila['isbn_4cifras'],
-        #                             fila['cambio_diario'],
-        #                             fila['saldo_actual_EUR'],
-        #                             fila['aportaciones'], fila['participaciones_actual'],
-        #                             fila['total_saldo_por']],)
-        #     return tabulate(tabla_general, headers="firstrow", tablefmt="rst",)
+            floatfmt=("", "", "", "", '_.2f', # nombre, isb, moneda, cambio_diario, valor
+                      '', '_.2f', '_.2f', '_.1f',# fecha, saldo_actual_EUR, rentabilidad_euros
+                      '', '', '', '', '.1f'),) # tae, alpha, beta, anual
+    #todo hacer un case para los dintintos tipos de tablas:
+    # elif tipo_de_tabla == 'control':
+    #     tabla_general.append([  fila['nombre'],
+    #                             fila['isbn_4cifras'],
+    #                             fila['cambio_diario'],
+    #                             fila['saldo_actual_EUR'],
+    #                             fila['aportaciones'], fila['participaciones_actual'],
+    #                             fila['total_saldo_por']],)
+    #     return tabulate(tabla_general, headers="firstrow", tablefmt="rst",)
 
 
 def sentimiento_del_mercado() -> str:
@@ -391,8 +393,8 @@ def maximo(datos_json: dict, fondo: list):
     #todo ¿que pasa si no se encuentra, hay que crearlo el json. poner un try
     isbn = fondo['isbn'] # type: ignore
     if datos_json[isbn][0]['max_valor'] <= fondo['valor']: # type: ignore
-        datos_json[isbn][0]['max_valor'] = fondo['valor']
-        datos_json[isbn][0]['max_fecha'] = fondo['fecha']
+        datos_json[isbn][0]['max_valor'] = fondo['valor'] # type: ignore
+        datos_json[isbn][0]['max_fecha'] = fondo['fecha'] # type: ignore
         return 'En max'
     else:
         return else_en_maximo_y_minimo(datos_json, fondo, 'max')
@@ -435,7 +437,7 @@ def else_en_maximo_y_minimo(datos_json: dict, fondo: list, tipo: str):
     else:
         cadena_fecha = 'min_fecha'
         cadena_valor = 'min_valor'
-    periodo = datetime.strptime(fondo['fecha'], '%d/%m/%y') - datetime.strptime(datos_json[isbn][0][cadena_fecha], '%d/%m/%y') 
+    periodo = datetime.strptime(fondo['fecha'], '%d/%m/%y') - datetime.strptime(datos_json[isbn][0][cadena_fecha], '%d/%m/%y')  # type: ignore
     periodo = str(periodo)
     periodo = periodo.split()
     periodo = '0' if periodo[0] == '0:00:00' else periodo[0]
@@ -486,6 +488,7 @@ if __name__ == '__main__':
                     'rentabilidad_euros': 'Rentab.\neuros',
                     'aportaciones': 'Aportaciones\nen euros',
                     'rentabilidad_porc': 'Rentab.\n%',
+                    'tae': 'TAE',
                     'total_saldo_por': 'Porcentaje\nen la bolsa',
                     'maximo' : 'Máximo',
                     'minimo': 'Mínimo',
@@ -543,6 +546,8 @@ if __name__ == '__main__':
         criterio = lambda movimiento: movimiento["isbn"] == fondo['isbn']
         movimientos_filtrados = list(filter(criterio, movimientos))
 
+        lista_fechas = []
+
         for movimiento in movimientos_filtrados:
             # * Trabajamos cada movimiento por separado
             # * Suma participaciones de todo el fondo para revisión
@@ -551,10 +556,19 @@ if __name__ == '__main__':
             saldo = fondo['valor'] * movimiento['participaciones']
             saldo_actual = saldo_actual + saldo
             participaciones_actual = participaciones_actual + movimiento['participaciones']
+            lista_fechas.append(movimiento['fecha'])
         # * Caculo de rentabilidades
         rentabilidad = saldo_actual - aportaciones
         rentabilidad_porc = rentabilidad / aportaciones * 100
         total_saldo = total_saldo + saldo_actual
+        # * Cáculo del TAE
+        lista_fechas.sort
+        fecha_inicio = lista_fechas[0]
+        fecha_inicio = datetime.strptime(fecha_inicio, "%d/%m/%Y")
+        hoy = datetime.now()
+        periodo = str(hoy - fecha_inicio)
+        numero_dias = int(periodo[:periodo.find(" ")])
+        tae = round((rentabilidad_porc/numero_dias)*365, 1)
         # * Pasamos la monedas extanjeras a EUROS
         if fondo['moneda'] != 'EUR':
             fondo['valor'] = paso_a_EUR(fondo['moneda'], fondo['valor'])
@@ -579,6 +593,7 @@ if __name__ == '__main__':
                                 'rentabilidad_euros': rentabilidad,
                                 'aportaciones': aportaciones,
                                 'rentabilidad_porc': rentabilidad_porc,
+                                'tae': tae,
                                 'total_saldo_por': 0
                                 } ) # type: ignore
 

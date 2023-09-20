@@ -56,6 +56,11 @@ Esta app obtiene mediante web _scraping_ los siguientes datos de cada fondo de i
 Los datos son extraídos de la web del *Financial Times*. No he usado APIs porque desde esta web obtengo todos los datos necesarios. Por otra parte, no he encontrado ningún un servidor gratuito mediante APIs que muestre todos estos datos.
 
 ### Otra información mostrada
+- TAE
+No se si es el termino correcto. La idea es comparar distintas rentabilidades que tiene periodos distintos. Para hallar este dato he procedido de la siguiente manera:
+1) Se halla el numero de días desde el inicio al día actual
+2) El % de rentabilidad se divide entre el valor del punto anterior
+3) El dato obtenido se multiplica por 365
 - Porcentaje en la bolsa:
 Indica el peso o valor de cada fondo en sobre el total del capital invertido.
 - Mínimo y Máximo:
@@ -106,12 +111,12 @@ Implementaciones futuras:
 - Crear los datos de json si el se incorpora un fondo
 - Crear app diferente para crear y actualizar el JSON
 - Implementar la posibilidad de distintos tipos de tablas: Para invertir, de control, etc
-- Crear una variable que sea 'TAE' que divide la rentabilidad del fondo entre los días de vida de ese fondo para poder comparar fondos
 - Crear la requirements.txt
 
 ## Versiones desarrolladas
 
 ### 1.01
+- Crear la columna 'TAE'
 - Mejora en la documentación
 - Correcciones menores
 
