@@ -57,14 +57,14 @@ Los datos son extraídos de la web del *Financial Times*. No he usado APIs porqu
 
 ### Otra información mostrada
 - TAE
-No se si es el termino correcto. La idea es comparar distintas rentabilidades que tiene periodos distintos. Para hallar este dato he procedido de la siguiente manera:
-1) Se halla el numero de días desde el inicio al día actual
-2) El % de rentabilidad se divide entre el valor del punto anterior
-3) El dato obtenido se multiplica por 365
+  No se si es el termino correcto. La idea es comparar distintas rentabilidades que tiene periodos distintos. Para hallar este dato he procedido de la siguiente manera:
+  1) Se halla el numero de días desde el inicio al día actual
+  2) El % de rentabilidad se divide entre el valor del punto anterior
+  3) El dato obtenido se multiplica por 365
 - Porcentaje en la bolsa:
-Indica el peso o valor de cada fondo en sobre el total del capital invertido.
+  Indica el peso o valor de cada fondo en sobre el total del capital invertido.
 - Mínimo y Máximo:
-Indica el valor de perdida o de ganancia y el número de días transcurridos. Para obtener estos datos se parte del JSON. Si se crea un nuevo fondo hay que meter ese valor de forma manual.
+  Indica el valor de perdida o de ganancia y el número de días transcurridos. Para obtener estos datos se parte del JSON. Si se crea un nuevo fondo hay que meter ese valor de forma manual.
 
 ### Concurrencia
 Para aumentar la velocidad he implementado tecnología de concurrencia. El resultado ha sido muy satisfactorio. He creado 6 hilos (max_workers=6) pero la cifra puede variar según el procesador del equipo en el que se use. El resultado para 17 fondos:
@@ -86,20 +86,15 @@ El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT p
 
 
 # Manifiesto de los archivos del repositorio
-- README.md
-  El archivo que estas leyendo
-- App Gestión de Fondos de inversión.py
-  Aplicación en Python principal
-- Datos
-  Hay que crear la carpeta "Datos". Esta carpeta  contiene los dos archivos CVS de donde se obtiene los datos de los fondos y las operaciones hechas:
+- README.md: El archivo que estas leyendo
+- App Gestión de Fondos de inversión.py: Aplicación en Python principal
+- Datos: Hay que crear la carpeta "Datos". Esta carpeta  contiene los dos archivos CVS de donde se obtiene los datos de los fondos y las operaciones hechas:
   - Listado de fondos-Fondos.csv
   - Listado de movimientos-Movimientos.csv
   - Historial.json
     Archivo que almacena el valor y la fecha de la posición mas alta y mas baja desde que se creo este archivo JSON
-- Informes
-  Carpeta que almacena los informes diarios. Esta carpeta también hay que crearla "Informes".
-- Datos de ejemplo:
-  En esta carpeta estan los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
+- Informes: Carpeta que almacena los informes diarios. Esta carpeta también hay que crearla "Informes".
+- Datos de ejemplo: En esta carpeta estan los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
   Los tres documentos son un ejemplo y se pueden usar para generar los nuevos.
   La imagen "Captura.png" muestra la aplicación con estos datos.
 
