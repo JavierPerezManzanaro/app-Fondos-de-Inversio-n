@@ -57,7 +57,7 @@ Los datos son extraídos de la web del *Financial Times*. No he usado APIs porqu
 
 ### Otra información mostrada
 - TAE
-  No se si es el termino correcto. La idea es comparar distintas rentabilidades que tiene periodos distintos. Para hallar este dato he procedido de la siguiente manera:
+  No se si es el termino correcto. La idea es comparar las distintas rentabilidades en periodos distintos. Para hallar este dato he procedido de la siguiente manera:
   1) Se halla el numero de días desde el inicio al día actual
   2) El % de rentabilidad se divide entre el valor del punto anterior
   3) El dato obtenido se multiplica por 365
@@ -109,6 +109,9 @@ Implementaciones futuras:
 - Crear la requirements.txt
 
 ## Versiones desarrolladas
+
+### 1.02
+- Correcciones menores
 
 ### 1.01
 - Crear la columna 'TAE'

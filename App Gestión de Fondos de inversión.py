@@ -1,4 +1,4 @@
-# App Gestión de Fondos de inversión
+# App Gestión de Fondos de Inversión
 # entorno: source 'venv_fondos/bin/activate'
 
 #!      CUIDADO
@@ -40,7 +40,7 @@ logging.basicConfig(level=logging.WARNING,
 
 
 def lectura_datos_fondos() -> list:
-    """Lee los datos del archivo de CVS exportado por Numbers
+    """Lee los datos del archivo de CVS exportado por Numbers. Las columnas del CSV empiezan por 0
 
     Returns:
         list: Lista de los fondos
@@ -52,11 +52,11 @@ def lectura_datos_fondos() -> list:
         next(lector_csv) # nos saltamos la cabecera
         for fila in lector_csv:
             logging.debug(f'Leyendo fila de "Fondos": {fila_numero}')
-            fondos.append({ 'isbn': fila[4],
+            fondos.append({ 'isbn': fila[2],
                             'fila_numbers': fila_numero,
                             'nombre': fila[0],
-                            'moneda': fila[6],
-                            'url': fila[5],
+                            'moneda': fila[3],
+                            'url': fila[4],
                             'propietario': fila[1],})
             fila_numero +=1
         print(f'Se han leido {len(fondos)} fondos')
@@ -153,11 +153,11 @@ def raspado(fondo: dict) -> list:
         beta = gazpacho_soup.find('td')[4].text # type: ignore
         beta = float(beta)
     except TypeError:  # TypeError: 'NoneType' object is not subscriptable
-        #logging.warning(f"Error a la hora de la extracción de datos: TypeError para: {fondo['nombre']}")
+        logging.warning(f"Error a la hora de la extracción de datos: TypeError para: {fondo['nombre']}")
         alpha = 0
         beta = 0
     except:
-        #logging.warning(f"Error a la hora de la extracción de datos para: {fondo['nombre']}")
+        logging.warning(f"Error a la hora de la extracción de datos para: {fondo['nombre']}")
         alpha = 0
         beta = 0
     finally:
@@ -325,19 +325,29 @@ def mostrar_tabla(tipo_de_tabla: str, tabla_completa: list):
         tabla_completa (list): Lista de datos a mostrar
     """
     tabla_general = []
+    numero = 0
     for fila in tabla_completa:
         if tipo_de_tabla == 'rentabilidad':
-            tabla_general.append([  fila['nombre'],
-                                    fila['isbn_4cifras'], fila['moneda'],
-                                    fila['cambio_diario'], fila['valor'], fila['fecha'],
-                                    fila['saldo_actual_EUR'], fila['rentabilidad_euros'], 
+            tabla_general.append([  numero,
+                                    fila['nombre'],
+                                    fila['isbn'][-4:],
+                                    # fila['isbn_4cifras'],
+                                    fila['moneda'],
+                                    fila['cambio_diario'],
+                                    fila['valor'],
+                                    fila['fecha'],
+                                    fila['saldo_actual_EUR'],
+                                    fila['rentabilidad_euros'],
                                     fila['rentabilidad_porc'],
                                     fila['tae'],
-                                    fila['alpha'], fila['beta'], fila['anual'],
+                                    fila['alpha'], fila['beta'],
+                                    fila['anual'],
                                     fila['total_saldo_por'],
-                                    fila['minimo'], fila['maximo'], ])
+                                    fila['minimo'],
+                                    fila['maximo'], ])
+            numero +=1
     return tabulate(tabla_general, headers="firstrow", tablefmt="rst",
-            floatfmt=("", "", "", "", '_.2f', # nombre, isb, moneda, cambio_diario, valor
+            floatfmt=("", "", "", "", "", '_.2f', # número, nombre, isb, moneda, cambio_diario, valor
                       '', '_.2f', '_.2f', '_.1f',# fecha, saldo_actual_EUR, rentabilidad_euros
                       '', '', '', '', '.1f'),) # tae, alpha, beta, anual
     #todo hacer un case para los dintintos tipos de tablas:
@@ -446,6 +456,20 @@ def else_en_maximo_y_minimo(datos_json: dict, fondo: list, tipo: str):
     return f'{diferencia}% hace {periodo} días'
 
 
+def control(tabla_completa):
+    informe_control = '\n\n\n'
+    informe_control += 'Resumen de datos para revisiones:\n\n'
+    for fondo in tabla_completa[1:]:
+        informe_control += f"{fondo['nombre']} - {fondo['isbn'][8:12]}\n"
+        informe_control += f"\tAportaciones totales: {fondo['aportaciones']:.2f} {fondo['moneda']}\n"
+        informe_control += f"\tParticipaciones totales: {fondo['participaciones_actual']:.2f}\n"
+        informe_control += f"\tRentabilidad en euros: {fondo['rentabilidad_euros']:.2f}\n"
+        informe_control += f"\t[ ] ok contabilidad\n"
+        informe_control += f"\t[ ] ok el banco\n"
+        informe_control += '\n\n'
+    return informe_control
+
+
 def informe():
     """Generamos un archivo resumen del tipo TXT que se guarda en la carpeta Informes
     """
@@ -459,6 +483,8 @@ def informe():
         archivo.write(f'Saldo total: {total_saldo:_.2f} €. Saldo invertido {aportaciones_acumuladas:_.2f} €, con una rentabilidad de {rentabilidad_acumulada:_.2f}, el {rentabilidad_acumulada_porc}%')
         archivo.write('\n')
         archivo.write(sentimiento_del_mercado_respuesta)
+        informe_control = control(tabla_completa)
+        archivo.write(informe_control)
 
 
 if __name__ == '__main__':
@@ -489,7 +515,7 @@ if __name__ == '__main__':
                     'aportaciones': 'Aportaciones\nen euros',
                     'rentabilidad_porc': 'Rentab.\n%',
                     'tae': 'TAE',
-                    'total_saldo_por': 'Porcentaje\nen la bolsa',
+                    'total_saldo_por': 'Porc. en\nla bolsa',
                     'maximo' : 'Máximo',
                     'minimo': 'Mínimo',
                     }]
@@ -596,7 +622,7 @@ if __name__ == '__main__':
                                 'tae': tae,
                                 'total_saldo_por': 0
                                 } ) # type: ignore
-
+        # print(f"{fondo['isbn'][8:12]} tiene {participaciones_actual} participaciones ")
     # * Ciclo principal, fuera de los for que recorren fondos y movimientos
 
 
@@ -616,11 +642,6 @@ if __name__ == '__main__':
 Alpha: Cuando hablamos de un alfa positivo, significa que el gestor está añadiendo valor a la cartera gracias a su eficacia y a la de todo su equipo invirtiendo.
 Beta: Indica cuán sensible es un fondo respecto a los movimientos del mercado y cuánto sube o baja cuando lo hace su índice de referencia. Cuanta más baja sea la beta (1 quiere decir que se comporta exactamente igual), mayor será su correlación con su benchmark. Es decir, menos volátil será el fondo frente al índice de referencia.
 ''')
-    print('''
-Avisos:
-- Debilidad de agosto a octubre y después, subidas
-''')
-# https://www.bolsamania.com/noticias/mercados/bolsas-debilidad-agosto-octubre-despues-subidas--14425310.html
-
+    #* comentar si quieremos ver el informe
+    # control(tabla_completa)
     informe()
-
