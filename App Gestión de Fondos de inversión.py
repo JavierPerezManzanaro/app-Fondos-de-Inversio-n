@@ -1,10 +1,12 @@
-# App Gestión de Fondos de Inversión
-# entorno: source 'venv_fondos/bin/activate'
+
+#* App Gestión de Fondos de Inversión
+#* entorno: source 'venv_fondos/bin/activate'
 
 #!      CUIDADO
 #todo   Por hacer
 #?      Aviso
 #*      Explicación
+
 
 
 from pprint import pprint
@@ -26,7 +28,6 @@ import fear_and_greed
 import locale
 locale.setlocale(locale.LC_ALL, 'es_ES')
 cambio = CurrencyConverter()
-
 
 
 
@@ -219,6 +220,7 @@ def crear_tabla_json(tabla_completa: list, total_saldo: float):
     for fondo in tabla_completa[1:]:
         esquema_json[fondo['isbn']] = []
         esquema_json[fondo['isbn']].append({
+                'max_rentab': fondo['max_rentab'], #todo: comprobar este punto
                 'max_fecha': fondo['fecha'],
                 'max_valor': fondo['valor'],
                 'min_fecha': fondo['fecha'],
@@ -260,6 +262,14 @@ def fondo_en_bolsa(saldo_actual_EUR: float, total_saldo: float) -> float:
     return total_saldo_por
 
 
+def caida_rentab(fondo):
+    #todo: meter el valos si es mayor que el que esta en el json
+    isbn = fondo['isbn'] # type: ignore
+    retorno = 100 - (fondo['rentabilidad_euros'] * 100) / datos_json[isbn][0]['max_rentab']
+    return retorno
+
+
+
 def completar_tabla(tabla_completa: list, total_saldo: float, datos_json: dict) -> list:
     """Completa la tabla con los valores que no se han recogido antes o que son dependientes
 
@@ -279,6 +289,8 @@ def completar_tabla(tabla_completa: list, total_saldo: float, datos_json: dict) 
         # * Calculamos los límites máximos y mínimos
         fondo['maximo'] = maximo(datos_json, fondo)
         fondo['minimo'] = minimo(datos_json, fondo)
+        # * Calculamos el caida_rentab
+        fondo['caida_rentab'] = caida_rentab(fondo)
         rentabilidad_acumulada = rentabilidad_acumulada + fondo['rentabilidad_euros']
         aportaciones_acumuladas = aportaciones_acumuladas + fondo['aportaciones']
     #todo añadir un SEPARATING_LINE,
@@ -333,23 +345,39 @@ def mostrar_tabla(tipo_de_tabla: str, tabla_completa: list):
                                     fila['isbn'][-4:],
                                     # fila['isbn_4cifras'],
                                     fila['moneda'],
-                                    fila['cambio_diario'],
-                                    fila['valor'],
+                                    #fila['cambio_diario'],
+                                    #fila['valor'],
                                     fila['fecha'],
                                     fila['saldo_actual_EUR'],
                                     fila['rentabilidad_euros'],
                                     fila['rentabilidad_porc'],
                                     fila['tae'],
-                                    fila['alpha'], fila['beta'],
+                                    fila['caida_rentab'],
+                                    fila['alpha'],
+                                    fila['beta'],
                                     fila['anual'],
                                     fila['total_saldo_por'],
                                     fila['minimo'],
                                     fila['maximo'], ])
             numero +=1
     return tabulate(tabla_general, headers="firstrow", tablefmt="rst",
-            floatfmt=("", "", "", "", "", '_.2f', # número, nombre, isb, moneda, cambio_diario, valor
-                      '', '_.2f', '_.2f', '_.1f',# fecha, saldo_actual_EUR, rentabilidad_euros
-                      '', '', '', '', '.1f'),) # tae, alpha, beta, anual
+            floatfmt=("", # número
+                      "", # nombre
+                      "", # isb
+                      "", # moneda
+                      #"", # cambio_diario
+                      #'_.2f', # valor
+                      '', # fecha
+                      '_.2f', # saldo_actual_EUR
+                      '_.2f', # rentabilidad_euros
+                      '_.2f', # rentabilidad_porc
+                      '_.1f', # tae
+                      '_.1f', # caida_rentab
+                      '', #alpha
+                      '', #beta
+                      '.1f', #anual
+                      '.1f', #porcentaje en bolsa
+                      ),)
     #todo hacer un case para los dintintos tipos de tablas:
     # elif tipo_de_tabla == 'control':
     #     tabla_general.append([  fila['nombre'],
@@ -405,6 +433,8 @@ def maximo(datos_json: dict, fondo: list):
     if datos_json[isbn][0]['max_valor'] <= fondo['valor']: # type: ignore
         datos_json[isbn][0]['max_valor'] = fondo['valor'] # type: ignore
         datos_json[isbn][0]['max_fecha'] = fondo['fecha'] # type: ignore
+        # si esta en max hay que actualizar también la rentabilidad maxima
+        datos_json[isbn][0]['max_rentab'] = fondo['rentabilidad_euros']  # type: ignore
         return 'En max'
     else:
         return else_en_maximo_y_minimo(datos_json, fondo, 'max')
@@ -487,6 +517,7 @@ def informe():
         archivo.write(informe_control)
 
 
+# * Empieza la app
 if __name__ == '__main__':
     os.system('clear')
     print('-'*49)
@@ -514,6 +545,7 @@ if __name__ == '__main__':
                     'rentabilidad_euros': 'Rentab.\neuros',
                     'aportaciones': 'Aportaciones\nen euros',
                     'rentabilidad_porc': 'Rentab.\n%',
+                    'caida_rentab': 'Caida:\n% desde max',
                     'tae': 'TAE',
                     'total_saldo_por': 'Porc. en\nla bolsa',
                     'maximo' : 'Máximo',
@@ -555,7 +587,6 @@ if __name__ == '__main__':
         nombre, propietario, url, valor
     movimiento: fecha, fila_numbers, importe_euros, importe_local, isbn, participaciones
     """
-
     for fondo in fondos_mod:
         logging.info(f'Analizando el fondo: {fondo["nombre"]} con ISBN: {fondo["isbn"]}')
         # * Variables para fondos
@@ -620,7 +651,7 @@ if __name__ == '__main__':
                                 'aportaciones': aportaciones,
                                 'rentabilidad_porc': rentabilidad_porc,
                                 'tae': tae,
-                                'total_saldo_por': 0
+                                'total_saldo_por': 0,
                                 } ) # type: ignore
         # print(f"{fondo['isbn'][8:12]} tiene {participaciones_actual} participaciones ")
     # * Ciclo principal, fuera de los for que recorren fondos y movimientos
