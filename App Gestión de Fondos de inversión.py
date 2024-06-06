@@ -3,10 +3,10 @@
 #* entorno: source 'venv_fondos/bin/activate'
 
 #!      CUIDADO
-#todo   Por hacer
-#?      Aviso
-#*      Explicación
-
+# todo   Por hacer
+# ?      Aviso
+# *      Explicación
+# * 2004-06-06
 
 
 from pprint import pprint
