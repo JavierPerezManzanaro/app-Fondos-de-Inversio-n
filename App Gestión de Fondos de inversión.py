@@ -6,7 +6,18 @@
 # todo   Por hacer
 # ?      Aviso
 # *      Explicación
-# * 2004-06-06
+
+
+# todo :
+"""
+Crear una columna que indique este valor:
+poderación — concepto:
+40% - incremento en el año
+40% - TAE
+20% -
+"""
+
+
 
 
 from pprint import pprint
@@ -676,3 +687,6 @@ Beta: Indica cuán sensible es un fondo respecto a los movimientos del mercado y
     #* comentar si quieremos ver el informe
     # control(tabla_completa)
     informe()
+
+
+#

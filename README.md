@@ -19,7 +19,7 @@ También muestra el indice [Fear&Greed](https://edition.cnn.com/markets/fear-and
 ## Imagen de ejemplo
 ![Imagen de ejemplo](https://github.com/JavierPerezManzanaro/app_Fondos_de_Inversion/blob/08068762f5b60aa2ac221b6ff68fd6123d672bd4/Datos%20de%20ejemplo/Captura.png)
 
-## Caraterísticas
+## Características
 
 ### Obtención de datos del usuario
 La aplicación lee dos archivos CVS que el usuario debe generar:
@@ -76,7 +76,7 @@ Para aumentar la velocidad he implementado tecnología de concurrencia. El resul
 Todos los datos mostrados están en Euros. La conversión se realiza usando el módulo [CurrencyConverter](https://pypi.org/project/CurrencyConverter/).
 
 ### Informes
-El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT para su posterior consulta historica. Estos archivos son almacenados en una carpeta que se llama "Informes".
+El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT para su posterior consulta histórica. Estos archivos son almacenados en una carpeta que se llama "Informes".
 
 
 # Instrucciones de instalación
@@ -94,7 +94,7 @@ El último paso cuando se ejecuta la aplicación es exportar la tabla como TXT p
   - Historial.json
     Archivo que almacena el valor y la fecha de la posición mas alta y mas baja desde que se creo este archivo JSON
 - Informes: Carpeta que almacena los informes diarios. Esta carpeta también hay que crearla "Informes".
-- Datos de ejemplo: En esta carpeta estan los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
+- Datos de ejemplo: En esta carpeta están los tres documentos necesarios para que la aplicación funcione. Hay que cambiar el nombre de la carpeta de "Datos de ejemplo" a "Datos".
   Los tres documentos son un ejemplo y se pueden usar para generar los nuevos.
   La imagen "Captura.png" muestra la aplicación con estos datos.
 
@@ -109,6 +109,10 @@ Implementaciones futuras:
 - Crear la requirements.txt
 
 ## Versiones desarrolladas
+
+### 1.1
+- Correcciones ortográficas
+- Correcciones menores
 
 ### 1.02
 - Correcciones menores
@@ -137,7 +141,7 @@ javierperez@perasalvino.es
 
 
 # Motivación
-Es un trabajo muy laborioso ir fondo a fono actualizando los datos. De esta forma se actualiza toda la cartera en segundos.
+Es un trabajo muy laborioso ir fondo a fondo actualizando los datos. De esta forma se actualiza toda la cartera en segundos.
 
 # Créditos y agradecimientos
 - A toda la comunidad web que me ha permitido ir ampliando mi formación.
